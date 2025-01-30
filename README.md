@@ -1,6 +1,6 @@
 # Overview
 
-Chapiana is a fully functional real time chat application designed for seamless and instant messaging. Built with a scalable backend architecture and an intuitive frontend interface, this application supports one-on-one messaging, group chats, and live status updates. 
+**Chapiana** is a fully functional real time chat application designed for seamless and instant messaging. Built with a scalable backend architecture and an intuitive frontend interface, this application supports one-on-one messaging, group chats, and live status updates. 
 
 The system ensures efficient message delivery using WebSockets, providing a smooth real time communication experience.
 
@@ -95,7 +95,7 @@ Installation
 ```python -m venv venv```
 ```source venv/bin/activate```
 
-_On Windows_
+**_On Windows_**
 ```venv\Scripts\activate```
 
 3. **Install Dependencies**
@@ -150,13 +150,13 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
-###Acknowledgments
+### Acknowledgments
 
 - Special thanks to the Django community for providing an excellent framework and resources.
 
 - I was inspired by modern chat applications like Slack, Discord, and WhatsApp.
 
-###Contact
+### Contact
 
 If you have any questions, suggestions, or feedback, feel free to reach out:
 
