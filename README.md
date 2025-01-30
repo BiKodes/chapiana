@@ -123,6 +123,7 @@ Open your browser and navigate to ```http://127.0.0.1:8000``` to start using the
 
 ### Project Structure
 
+```bash
 chapiana/
 ├── chat/                  # Django app for chat functionality
 │   ├── templates/         # Django templates for chat UI
@@ -133,6 +134,7 @@ chapiana/
 ├── requirements.txt       # Project dependencies
 ├── .env                   # Environment variables
 └── ...
+```
 
 ### Contributing
 
