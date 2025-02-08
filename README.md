@@ -242,14 +242,22 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 4. Submit a pull request with a detailed description of your changes.
 
-## Design Note
+### Design Note
 
-**Chapiana** is majorly focused on the backend functionality and lacks a production grade user interface design. 
+**Chapiana** is majorly focused on the backend functionality and lacks a production grade user interface design.
+
 This design choice allows developers to focus solely on the backend and the integration of Django Channels for 
 real-time communication. 
 
 As a result, **Chapiana** serves as a great educational resource and a starting point for those looking to learn 
 about Django, Django Channels, and real-time communication.
+
+### Resources
+1. [Django Tutorial - Corey Schafer](https://www.youtube.com/watch?v=UmljXZIypDc&list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p) 
+2. [Django Channels - RealPython](https://realpython.com/getting-started-with-django-channels/)
+3. [Django Channels](https://channels.readthedocs.io/)
+4. [Django Channels and WebSockets oversimplified - Dennis Ivy](https://www.youtube.com/watch?v=cw8-KFVXpTE)
+5. [Token Auth middleware ideas](https://gist.github.com/rluts/22e05ed8f53f97bdd02eafdf38f3d60a)
 
 ### License
 
