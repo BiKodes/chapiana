@@ -1,0 +1,33 @@
+-r base.txt
+-r ci.txt
+
+mock
+tox
+codecov
+django_extensions>=3.1.1
+pytz>=2021.3
+# Additional test requirements go here
+-r base.txt
+-r ci.txt
+
+coverage
+git-changelog
+flake8
+flake8-black
+flake8-bugbear
+flake8-debugger
+flake8-docstrings
+flake8-isort
+flake8-print
+pep257
+pycodestyle
+pytest
+pytest-django
+pytest-xdist
+pytest-cov
+pytest-testmon
+model-bakery
+djangorestframework-stubs
+conventional-pre-commit
+black
+time-machine

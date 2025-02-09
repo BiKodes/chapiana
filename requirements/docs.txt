@@ -1,0 +1,5 @@
+-r base.txt
+
+sphinx==7.3.7
+sphinx_rtd_theme==3.0.2
+sphinx-diagrams==0.4.0

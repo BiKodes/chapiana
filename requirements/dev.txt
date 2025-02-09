@@ -1,0 +1,13 @@
+-r test.txt
+-r ci.txt
+
+black
+isort
+django-silk
+
+
+invoke
+twine
+wheel
+zest.releaser
+readme-renderer

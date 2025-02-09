@@ -1,0 +1,10 @@
+channels
+channels-redis
+celery
+Django
+django-allauth
+django-cleanup
+djangorestframework
+Pillow
+redis
+requests

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[metadata]
+name = "chapiana_bikodes"
+dynamic = ["version"]
+authors = [
+  { name="Biko Steven", email="bikocodes@gmail.com" },
+]
+description = "A real time chat application."
+license = "MIT"
+license-files = ["LICEN[CS]E*", "CONTRIBUTING*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "src.__version__"} 
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+
+[project]
+dependencies = [
+  "httpx",
+  "gidgethub[httpx]",
+  "django",
+]
+keywords = ["chat", "chat app", "chat application"]
+
+
+[options]
+packages = "find:"
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/BiKodes/chapiana"
+Documentation = "https://readthedocs.org"
+Issues = "https://github.com/BiKodes/chapiana/issues"
+Changelog = "https://github.com/BiKodes/chapiana/CHANGELOG.md"

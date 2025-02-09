@@ -1,0 +1,25 @@
+# git
+**/.git
+**/.gitignore
+
+# vscode
+**/.vscode
+
+# docker
+Dockerfile
+docker-compose.yml
+
+# python
+**/coverage
+**/__pycache__/
+**/.aws
+**/.ssh
+**/venv
+**/env
+**/.env
+
+# markdown
+README.md
+CONTRIBUTION.md
+
+**/.DS_Store
