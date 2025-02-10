@@ -36,6 +36,77 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[tool.ruff]
+# Enable/Disable application of unsafe fixes.
+unsafe-fixes = true
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "*/migrations/*.py",
+    "staticfiles/*",
+]
+
+# ==== Coverage ====
+[tool.coverage.run]
+branch = true
+omit = ["*/migrations/*", "*/schemas/*"]
+plugins = []
+disable_warnings = ["include-ignored"]
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+
+    # Exclude protocol methods implementations i.e '...', they aren't run:
+    "^\\s*\\.\\.\\.$",
+
+    # Exclude TYPE_CHECKING blocks
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.html]
+directory = "coverage"
+
 
 [project.urls]
 Homepage = "https://github.com/BiKodes/chapiana"
