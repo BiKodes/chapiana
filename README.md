@@ -252,6 +252,17 @@ real-time communication.
 As a result, **Chapiana** serves as a great educational resource and a starting point for those looking to learn 
 about Django, Django Channels, and real-time communication.
 
+
+### Performance
+
+> [!NOTE]
+> It is better to use the **virtualenvironment** when installing libraries and running the project. 
+
+
+> [!WARNING]
+> Have **redis** installed on the system before running. <br>
+> download and install [redis for windows](https://github.com/tporadowski/redis/releases) and to `cmd` type `redis-server` to run the redis.
+
 ### Resources
 1. [Django Tutorial - Corey Schafer](https://www.youtube.com/watch?v=UmljXZIypDc&list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p) 
 2. [Django Channels - RealPython](https://realpython.com/getting-started-with-django-channels/)
