@@ -4,8 +4,6 @@
 black
 isort
 django-silk
-
-
 invoke
 twine
 wheel

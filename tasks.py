@@ -15,7 +15,7 @@ def open_browser(path):
 @task
 def clean_build(c):
     """
-    Remove build artifacts
+    Remove build artifacts.
     """
     c.run("rm -fr build/")
     c.run("rm -fr dist/")
@@ -25,7 +25,7 @@ def clean_build(c):
 @task
 def clean_pyc(c):
     """
-    Remove python file artifacts
+    Remove python file artifacts.
     """
     c.run("find . -name '*.pyc' -exec rm -f {} +")
     c.run("find . -name '*.pyo' -exec rm -f {} +")
@@ -35,31 +35,18 @@ def clean_pyc(c):
 @task
 def coverage(c):
     """
-    check code coverage quickly with the default Python
+    check code coverage quickly with the default Python.
     """
-    c.run("coverage run --source django_private_chat2 runtests.py tests")
+    c.run("coverage run --source chapiana runtests.py tests")
     c.run("coverage report -m")
     c.run("coverage html")
     c.run("open htmlcov/index.html")
 
 
 @task
-def docs(c):
-    """
-    Build the documentation and open it in the browser
-    """
-    c.run("rm -f docs/django_private_chat2.rst")
-    c.run("rm -f docs/modules.rst")
-    c.run("sphinx-apidoc -o docs/ django_private_chat2")
-
-    c.run("sphinx-build -E -b html docs docs/_build")
-    open_browser(path='docs/_build/html/index.html')
-
-
-@task
 def test_all(c):
     """
-    Run tests on every python version with tox
+    Run tests on every python version with tox.
     """
     c.run("tox")
 
@@ -67,7 +54,7 @@ def test_all(c):
 @task
 def clean(c):
     """
-    Remove python file and build artifacts
+    Remove python file and build artifacts.
     """
     clean_build(c)
     clean_pyc(c)
@@ -76,18 +63,35 @@ def clean(c):
 @task
 def unittest(c):
     """
-    Run unittests
+    Run unittests.
     """
-    c.run("python manage.py test")
+    c.run("python3 manage.py test")
 
 
 @task
 def lint(c):
     """
-    Check style with flake8
+    Check style with flake8.
     """
-    c.run("flake8 django_private_chat2 tests")
+    c.run("flake8 chapiana tests")
 
+@task
+def format(c):
+    """
+    Fix linting errors.
+    """
+    c.run("isort && black")
+
+@task
+def changelog(c):
+    """
+    Create and update changelog
+    """
+    c.run("git-changelog --style conventional \
+    --sections feat,fix,revert,refactor,perf,build,ci,deps,docs,style,test \
+    --template path:CHANGELOG.md.jinja \
+    --bump-latest \
+    -o CHANGELOG.md")
 
 @task(help={'bumpsize': 'Bump either for a "feature" or "breaking" change'})
 def release(c, bumpsize=''):
@@ -101,9 +105,16 @@ def release(c, bumpsize=''):
     # c.run("bumpversion {bump} --no-input".format(bump=bumpsize))
 
     import src
-    c.run("python setup.py sdist bdist_wheel")
+    c.run("python3 setup.py sdist bdist_wheel")
     c.run("twine upload dist/* --verbose")
 
     c.run('git tag -a {version} -m "New version: {version}"'.format(version=src.__version__))
     c.run("git push --tags")
     c.run("git push origin master")
+
+@task
+def package(c):
+    """
+    Packaging chapiana and uploading to PyPI.
+    """
+    c.run("python3 pyproject.py sdist")

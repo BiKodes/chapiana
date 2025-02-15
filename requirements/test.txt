@@ -1,16 +1,10 @@
 -r base.txt
 -r ci.txt
 
-mock
-tox
-codecov
-django_extensions>=3.1.1
-pytz>=2021.3
-# Additional test requirements go here
--r base.txt
--r ci.txt
-
+djangorestframework-stubs
+django_extensions
 coverage
+codecov
 git-changelog
 flake8
 flake8-black
@@ -23,11 +17,13 @@ pep257
 pycodestyle
 pytest
 pytest-django
+pytz
 pytest-xdist
 pytest-cov
 pytest-testmon
+mock
 model-bakery
-djangorestframework-stubs
+tox
 conventional-pre-commit
 black
 time-machine
