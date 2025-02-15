@@ -1,11 +1,64 @@
 version: "3.8"
-
 services:
-  app:
-    build: .
-    env_file:
-      - ./.env
-    ports:
-      - "8000:8000"
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
+
+    postgres:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_USER: "${DB_USER}"
+        POSTGRES_PASSWORD: "${DB_PASS}"
+        POSTGRES_DB: "${DB_NAME}"
+      ports:
+        - "5432:5432"
+      volumes:
+        - postgresql-data:/var/lib/postgresql/data
+        - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      networks:
+        - chapiana
+
+    api:
+      build: ./
+      env_file: .env
+      command: >
+        bash -c "python wait_for_postgres.py &&
+                ./manage.py migrate &&
+                ./manage.py runserver 0.0.0.0:8000"
+      depends_on:
+      - postgres
+      - redis
+      environment:
+      - DJANGO_SECRET_KEY: "local"
+      ports:
+        - "8000:8000"
+      restart: unless-stopped
+      volumes:
+        - ./:/code
+      networks:
+        - chapiana
+
+    redis:
+      restart: always
+      image: redis:latest
+      command:
+      - --loglevel warning
+      volumes:
+      - redis-data:/data:Z
+      networks:
+        - helio-network
+
+    nginx:
+      restart: always
+      build: ./nginx/
+      ports:
+        - "80:80"
+      volumes:
+        - web-static:/www/static
+      links:
+        - web:web
+
+networks:
+  chapiana:
+    driver: bridge
+
+volumes:
+  postgresql-data:
