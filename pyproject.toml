@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 
@@ -36,8 +36,15 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[tool.black]
+line-length = 80
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+line_length = 80
+
 [tool.ruff]
-# Enable/Disable application of unsafe fixes.
 unsafe-fixes = true
 
 # Exclude a variety of commonly ignored directories.
@@ -72,7 +79,6 @@ exclude = [
     "staticfiles/*",
 ]
 
-# ==== Coverage ====
 [tool.coverage.run]
 branch = true
 omit = ["*/migrations/*", "*/schemas/*"]
@@ -107,6 +113,8 @@ exclude_also = [
 [tool.coverage.html]
 directory = "coverage"
 
+[tool.ruff.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
 
 [project.urls]
 Homepage = "https://github.com/BiKodes/chapiana"
