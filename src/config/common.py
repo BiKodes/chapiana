@@ -28,6 +28,7 @@ class Common(Configuration):
         "rest_framework_simplejwt.token_blacklist",
         "drf_yasg",
         "corsheaders",
+        "django-configurations",
 
     )
 
@@ -57,10 +58,13 @@ class Common(Configuration):
 
     DATABASES = {
         "default": dj_database_url.config(
-            default="postgres://chapiana:@chapiana:5432/chapiana",
+            default="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB",
             conn_max_age=int(os.getenv("POSTGRES_CONN_MAX_AGE", 600)),
         )
     }
+
+    # Enable Connection Pooling
+    DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
     APPEND_SLASH = False
     TIME_ZONE = "UTC"

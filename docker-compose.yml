@@ -13,6 +13,14 @@ services:
       volumes:
         - postgresql-data:/var/lib/postgresql/data
         - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      env_file:
+        - .env
+
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
       networks:
         - chapiana
 
@@ -22,12 +30,13 @@ services:
       command: >
         bash -c "python wait_for_postgres.py &&
                 ./manage.py migrate &&
-                ./manage.py runserver 0.0.0.0:8000"
+                ./manage.py runserver 0.0.0.0:8000
+                gunicorn config.wsgi:application --bind 0.0.0.0:8000"
       depends_on:
-      - postgres
-      - redis
+        - postgres
+        - redis
       environment:
-      - DJANGO_SECRET_KEY: "local"
+        - DJANGO_SECRET_KEY: "local"
       ports:
         - "8000:8000"
       restart: unless-stopped
@@ -37,12 +46,14 @@ services:
         - chapiana
 
     redis:
-      restart: always
       image: redis:latest
+      restart: always
       command:
-      - --loglevel warning
+        - --loglevel warning
       volumes:
-      - redis-data:/data:Z
+        - redis-data:/data:Z
+      ports:
+        - "6379:6379"
       networks:
         - helio-network
 
