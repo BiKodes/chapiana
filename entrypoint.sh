@@ -9,4 +9,8 @@ DJANGO_SUPERUSER_PASSWORD=$SUPER_USER_PASSWORD python3 manage.py createsuperuser
 gunicorn --bind :$PORT \
     src.wsgi --access-logfile - --error-logfile - --log-level info
 
-echo "Done setting the configuration"
+echo "Done setting Chapiana configurations"
+exec "$@"
+
+# Make it executable
+chmod +x entrypoint.sh
