@@ -207,3 +207,8 @@ class Common(Configuration):
         "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     }
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+    # Nginx SSL
+    SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "/etc/nginx/ssl/cert.pem")
+    SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "/etc/nginx/ssl/key.pem")
+
