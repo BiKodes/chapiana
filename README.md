@@ -119,6 +119,23 @@ In this case, I'm using the In-Memory channel system, but could be changed to th
 
 Please take a look at the link below for more information: https://channels.readthedocs.io/en/latest/introduction.html
 
+## SSL Certificates
+
+For production, replace nginx/ssl/cert.pem and nginx/ssl/key.pem with **Let’s Encrypt certificates.**
+
+Run the following commands to generate a self-signed certificate for local testing:
+
+```mkdir -p nginx/ssl```
+
+```openssl req -x509 -newkey rsa:4096 -keyout nginx/ssl/key.pem -out nginx/ssl/cert.pem -days 365 -nodes```
+
+## Running the Containers
+
+```docker-compose up --build -d```
+
+Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file handling.
+
+
 ## Tech Stack
 
 - **Backend**
@@ -143,9 +160,28 @@ Please take a look at the link below for more information: https://channels.read
 
 - **Database**
 
-  PostgreSQL for storing user data and chat history. If more performance is required, a PostgreSQL cluster / shard could be deployed.
+  PostgreSQL for storing user data and chat history. If more performance is required, 
+  a PostgreSQL cluster / shard could be deployed.
 
   PD: I'm using indexes to improve performance.
+
+- **Docker Volumes**
+
+  It is to persist database data.
+
+- **Nginx**
+
+  Chapiana configures NGINX  as a reverse proxy for performance to:
+
+  - Proxy requests to Django + Gunicorn.
+
+  - Serve static and media files.
+
+  - Enable SSL (HTTPS).
+
+- **Gunicorn**
+
+  We are using using Gunicorn instead of Django’s built-in server for production.
 
 - **Deployment**
 
@@ -182,11 +218,13 @@ Installation
 1. **Clone the Repository**
 
 ```git clone https://github.com/your-username/chapiana.git```
+
 ```cd chapiana```
 
 2. **Create a Virtual Environment**
 
 ```python -m venv venv```
+
 ```source venv/bin/activate```
 
 **_On Windows_**
@@ -205,6 +243,7 @@ Apply migrations to set up the database:
 Create a .env file in the root directory and add the necessary environment variables:
 
 ```SECRET_KEY=your_django_secret_key```
+
 ```DEBUG=True```
 
 6. **Run the Application**
@@ -214,6 +253,21 @@ Start the Django development server:
 
 7. **Access the Application**
 Open your browser and navigate to ```http://127.0.0.1:8000``` to start using the chat application.
+
+8. **Run Gunicorn to Serve Chapiana**
+Navigate to Chapiana's project’s root directory and run:
+
+```gunicorn --workers 3 --bind 0.0.0.0:8000 src.wsgi:application```
+
+
+  **Breakdown**
+
+  - --workers 3 → Runs 3 worker processes (adjust based on server resources).
+
+  - --bind 0.0.0.0:8000 → Binds to port 8000.
+
+  - src.wsgi:application → Uses WSGI entry point.
+
 
 ### Project Structure
 
