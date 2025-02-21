@@ -30,6 +30,9 @@ class Common(Configuration):
         "corsheaders",
         "django-configurations",
 
+        # Custom apps
+        "accounts",
+
     )
 
 
