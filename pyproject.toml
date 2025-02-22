@@ -2,40 +2,44 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-
-[metadata]
+[project]
 name = "chapiana_bikodes"
 dynamic = ["version"]
+description = "A real-time chat application."
 authors = [
-  { name="Biko Steven", email="bikocodes@gmail.com" },
+  { name = "Biko Steven", email = "bikocodes@gmail.com" },
 ]
-description = "A real time chat application."
-license = "MIT"
-license-files = ["LICEN[CS]E*", "CONTRIBUTING*"]
-
-[tool.setuptools.dynamic]
-version = {attr = "src.__version__"} 
-readme = {file = ["README.md"], content-type = "text/markdown"}
-
-
-[project]
-dependencies = [
-  "httpx",
-  "gidgethub[httpx]",
-  "django",
-]
+license = { text = "MIT" }
 keywords = ["chat", "chat app", "chat application"]
-
-
-[options]
-packages = "find:"
-requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "httpx",
+    "gidgethub[httpx]",
+    "django",
+]
+requires-python = ">=3.12"
 
+[project.urls]
+Homepage = "https://github.com/BiKodes/chapiana"
+Documentation = "https://readthedocs.org"
+Issues = "https://github.com/BiKodes/chapiana/issues"
+Changelog = "https://github.com/BiKodes/chapiana/CHANGELOG.md"
+
+# Dynamic configuration
+[tool.setuptools.dynamic]
+version = { attr = "chapiana_bikodes.__version__" }
+readme = { file = ["README.md"], content-type = "text/markdown" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["chapiana_bikodes"]
+namespaces = false
+
+# Black formatting
 [tool.black]
 line-length = 80
 skip-string-normalization = true
@@ -46,8 +50,6 @@ line_length = 80
 
 [tool.ruff]
 unsafe-fixes = true
-
-# Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
     ".direnv",
@@ -79,45 +81,27 @@ exclude = [
     "staticfiles/*",
 ]
 
+[tool.ruff.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = true
+
+# Coverage configuration
 [tool.coverage.run]
 branch = true
 omit = ["*/migrations/*", "*/schemas/*"]
-plugins = []
 disable_warnings = ["include-ignored"]
 
 [tool.coverage.report]
-# Regexes for lines to exclude from consideration
 exclude_also = [
-    # Don't complain about missing debug-only code:
     "def __repr__",
     "if self\\.debug",
-
-    # Don't complain if tests don't hit defensive assertion code:
     "raise AssertionError",
     "raise NotImplementedError",
-
-    # Don't complain if non-runnable code isn't run:
     "if 0:",
     "if __name__ == .__main__.:",
-
-    # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
-
-    # Exclude protocol methods implementations i.e '...', they aren't run:
     "^\\s*\\.\\.\\.$",
-
-    # Exclude TYPE_CHECKING blocks
     "if TYPE_CHECKING:",
 ]
 
 [tool.coverage.html]
 directory = "coverage"
-
-[tool.ruff.flake8-comprehensions]
-allow-dict-calls-with-keyword-arguments = true
-
-[project.urls]
-Homepage = "https://github.com/BiKodes/chapiana"
-Documentation = "https://readthedocs.org"
-Issues = "https://github.com/BiKodes/chapiana/issues"
-Changelog = "https://github.com/BiKodes/chapiana/CHANGELOG.md"
