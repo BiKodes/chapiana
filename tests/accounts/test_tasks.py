@@ -16,7 +16,7 @@ from unittest.mock import patch
 import pytest
 from django.core.mail import send_mail
 from src.config.common import Common
-from src.accounts.email_module import send_email
+from src.accounts.utils import send_email
 
 
 class TestSendEmail:
