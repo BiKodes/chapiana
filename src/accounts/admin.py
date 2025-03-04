@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from src.accounts.forms import CustomUserRegisterForm, CustomUserChangeForm
-from src.accounts.models import ChapianaUser, OneTimePassword
+from src.accounts.models import ChapianaUser, OneTimePassword, Profile
 from django.db import models
 from django import forms
 
@@ -47,3 +47,4 @@ class CustomChapianaUserAdmin(UserAdmin):
     )
 
 admin.site.register(ChapianaUser, CustomChapianaUserAdmin)
+admin.site.register(Profile)
