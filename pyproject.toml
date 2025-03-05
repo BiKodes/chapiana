@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chapiana_bikodes"
-dynamic = ["version"]
+version = "0.1.0"
 description = "A real-time chat application."
 authors = [
   { name = "Biko Steven", email = "bikocodes@gmail.com" },
@@ -31,7 +31,6 @@ Changelog = "https://github.com/BiKodes/chapiana/CHANGELOG.md"
 
 # Dynamic configuration
 [tool.setuptools.dynamic]
-version = { attr = "chapiana_bikodes.__version__" }
 readme = { file = ["README.md"], content-type = "text/markdown" }
 
 [tool.setuptools.packages.find]
