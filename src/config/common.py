@@ -1,11 +1,15 @@
 import os
 from datetime import timedelta
-from distutils.util import strtobool
 from os.path import join
 
-import dj_database_url
+
 from configurations import Configuration
 from django.utils.crypto import get_random_string
+
+def strtobool(val):
+    """Convert a string to a boolean value (replicating distutils.util.strtobool)."""
+    return val.lower() in ("y", "yes", "t", "true", "on", "1")
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,6 +33,7 @@ class Common(Configuration):
         "drf_yasg",
         "corsheaders",
         "django-configurations",
+        "configurations",
 
         # Custom apps
         "accounts",

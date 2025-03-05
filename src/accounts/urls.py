@@ -6,6 +6,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from src.accounts.views import RegisterViewSet, LoginViewSet, LogoutViewSet, OneTimePassword, ForgotPasswordViewSet
 
+
 router = DefaultRouter()
 router.register(r"register", RegisterViewSet, basename="register-user")
 router.register(r"login", LoginViewSet, basename="login-user")
