@@ -14,6 +14,7 @@ router.register(r"logout", LogoutViewSet, basename="logout-user")
 router.register(r"otp", OneTimePassword, basename="one-time-password")
 router.register(r"password", ForgotPasswordViewSet, basename="forgot-password")
 
+app_name = "accounts"
 
 urlpatterns = [
     path("admin/", admin.site.urls),

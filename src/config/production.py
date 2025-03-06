@@ -3,7 +3,7 @@ import os
 from .common import Common
 
 
-class Production(Common):
+class PRODUCTION(Common):
     INSTALLED_APPS = Common.INSTALLED_APPS
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
     ALLOWED_HOSTS = ["*"]
@@ -27,4 +27,3 @@ class Production(Common):
     AWS_HEADERS = {
         "Cache-Control": "max-age=86400, s-maxage=86400, must-revalidate",
     }
-    
