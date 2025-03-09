@@ -14,7 +14,7 @@ class CustomChapianaUserAdmin(UserAdmin):
     list_filter = ("is_staff", "is_active", "is_superuser", "date_joined", "last_login")
     readonly_fields = ("date_joined", "last_login")
     search_fields = ("email", "first_name", "last_name")
-    ordering = ("-date_joined")
+    ordering = ("-date_joined",)
     formfield_overrides = {
         models.PositiveIntegerField: {"widget": forms.NumberInput(attrs={"size": "15"})},
     }
@@ -48,3 +48,4 @@ class CustomChapianaUserAdmin(UserAdmin):
 
 admin.site.register(ChapianaUser, CustomChapianaUserAdmin)
 admin.site.register(Profile)
+admin.site.register(OneTimePassword)

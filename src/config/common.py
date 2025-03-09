@@ -3,18 +3,17 @@ from datetime import timedelta
 from os.path import join
 
 
+import environ
 from configurations import Configuration
+from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 from django.utils.crypto import get_random_string
-
-def strtobool(val):
-    """Convert a string to a boolean value (replicating distutils.util.strtobool)."""
-    return val.lower() in ("y", "yes", "t", "true", "on", "1")
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class Common(Configuration):
+    env = environ.Env()
 
     INSTALLED_APPS = (
         "django.contrib.admin",
@@ -27,17 +26,16 @@ class Common(Configuration):
         # Third party apps
         "rest_framework",
         "rest_framework.authtoken",
-        "django_filters",
-        "rest_framework_simplejwt",
-        "rest_framework_simplejwt.token_blacklist",
-        "drf_yasg",
-        "corsheaders",
-        "django-configurations",
+        # "django_filters",
+        # "rest_framework_simplejwt",
+        # "rest_framework_simplejwt.token_blacklist",
+        # "drf_yasg",
+        # "corsheaders",
         "configurations",
 
         # Custom apps
-        "accounts",
-
+        "src.accounts.apps.AccountsConfig",
+        "src.chat.apps.ChatConfig",
     )
 
 
@@ -58,21 +56,31 @@ class Common(Configuration):
     ]
 
     ALLOWED_HOSTS = ["*"]
-    ROOT_URLCONF = "src.urls"
-    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+    ROOT_URLCONF = "src.config.urls"
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
     WSGI_APPLICATION = "src.wsgi.application"
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     ADMINS = (("Author", "bikocodes@gmail.com"),)
 
+    
     DATABASES = {
-        "default": dj_database_url.config(
-            default="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB",
-            conn_max_age=int(os.getenv("POSTGRES_CONN_MAX_AGE", 600)),
-        )
+       'default': {
+           "NAME": env.str("POSTGRES_NAME"),
+            "USER": env.str("POSTGRES_USER"),
+            "PASSWORD":env.str ("POSTGRES_PASSWORD"),
+            "HOST": env.str("POSTGRES_HOST", "localhost"),
+            "PORT": env.int("POSTGRES_PORT", 5432),
+            "ENGINE": "django.db.backends.postgresql",
+            # "ATOMIC_REQUEST": True,
+            # "OPTIONS": {
+            #     "server_side_binding": True,
+            #     "isolation_level": ISOLATION_LEVEL_READ_COMMITTED
+            # }
+        }
     }
 
     # Enable Connection Pooling
-    DATABASES['default']['ENGINE'] = 'django_postgrespool'
+    # DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
     APPEND_SLASH = False
     TIME_ZONE = "UTC"
@@ -119,7 +127,7 @@ class Common(Configuration):
     ]
 
     # Set DEBUG to False as a default for safety
-    DEBUG = strtobool(os.getenv("DJANGO_DEBUG", False))
+    DEBUG = env.bool("DJANGO_DEBUG", False)
 
     # Password Validation
     AUTH_PASSWORD_VALIDATORS = [
@@ -193,7 +201,7 @@ class Common(Configuration):
 
     REST_FRAMEWORK = {
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-        "PAGE_SIZE": int(os.getenv("DJANGO_PAGINATION_LIMIT", 10)),
+        "PAGE_SIZE": env.int("DJANGO_PAGINATION_LIMIT", 10),
         "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%S%z",
         "DEFAULT_RENDERER_CLASSES": (
             "rest_framework.renderers.JSONRenderer",
@@ -227,3 +235,5 @@ class Common(Configuration):
     EMAIL_PORT = 587
     EMAIL_HOST_USER = ''
     EMAIL_HOST_PASSWORD = ''
+
+    AUTH_USER_MODEL = 'accounts.ChapianaUser'

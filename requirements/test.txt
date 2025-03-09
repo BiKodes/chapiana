@@ -27,3 +27,4 @@ tox
 conventional-pre-commit
 black
 time-machine
+invoke
