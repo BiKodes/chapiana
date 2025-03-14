@@ -1,9 +1,10 @@
 """Chapiana data layers."""
-from django.utils import timezone
 from typing import Optional, Any
+from datetime import timedelta
 
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel, SoftDeletableModel
@@ -245,6 +246,14 @@ class VideoCall(models.Model):
         Returns the duration of the video call as a timedelta.
         """
         return self.date_ended - self.date_started
+    
+    @property
+    def duration_in_seconds(self):
+        """
+        Returns the call duration in seconds as an integer.
+        """
+        duration: timedelta = self.video_call_duration
+        return int(duration.total_seconds())
     
     def is_accepted(self):
         """
