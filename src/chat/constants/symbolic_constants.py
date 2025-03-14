@@ -1,11 +1,12 @@
 """Chat Symbolic Constants."""
 
-VIDEO_CALL_STATUS = {
-    0: 'Contacting',
-    1: 'Not Available',
-    2: 'Accepted',
-    3: 'Rejected',
-    4: 'Busy',
-    5: 'Processing',
-    6: 'Ended',
-}
+from django.db import models
+
+class VideoCallStatus(models.IntegerChoices):
+    CONTACTING = 0, 'Contacting'
+    NOT_AVAILABLE = 1, 'Not Available'
+    ACCEPTED = 2, 'Accepted'
+    REJECTED = 3, 'Rejected'
+    BUSY = 4, 'Busy'
+    PROCESSING = 5, 'Processing'
+    ENDED = 6, 'Ended'
