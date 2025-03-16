@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 
 from src.accounts.models import ChapianaUser, Profile
-from src.common.models import UploadedFile
+from src.common.base import UploadedFile
 from src.chat.constants.symbolic_constants import VideoCallStatus
 from src.chat.tasks import notify_video_call_users
 
