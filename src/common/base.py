@@ -1,6 +1,7 @@
 """Base objects."""
 import uuid
 
+from celery import Task
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -19,3 +20,14 @@ class UploadedFile(models.Model):
 
     def __str__(self):
         return str(self.file.name)
+
+
+class BaseRetryTask(Task):
+    """Celery Retry Task."""
+    autoretry_for = (Exception,)
+    retry_kwargs = {"max_retries": 5, "countdown": 10}
+    # Exponential backoff
+    retry_backoff = True
+    # Adds random jitter for better scaling
+    retry_jitter = True
+    default_retry_delay = 5

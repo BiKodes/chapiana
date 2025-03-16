@@ -10,8 +10,10 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 
 from src.accounts.models import ChapianaUser, Profile
-from src.common.models import UploadedFile
+from src.common.base import UploadedFile
 from src.chat.constants.symbolic_constants import VideoCallStatus
+from src.chat.tasks import notify_video_call_users
+
 
 class ChatRoom(models.Model):
     """
@@ -256,6 +258,20 @@ class VideoCall(models.Model):
         duration: timedelta = self.video_call_duration
         return int(duration.total_seconds())
     
+    def notify_users(self):
+        """
+        Trigger Celery task to notify users asynchronously.
+        """
+        notify_video_call_users.delay(
+            call_id=self.id,
+            caller_id=self.caller.id,
+            receiver_id=self.receiver.id,
+            status=self.status_name,
+            date_started=self.date_started.isoformat(),
+            date_ended=self.date_ended.isoformat(),
+            duration_seconds=self.duration_in_seconds
+        )
+    
     def is_accepted(self):
         """
         Returns True if the call was accepted.
@@ -291,4 +307,8 @@ class VideoCall(models.Model):
         Returns True if the receiver was not available.
         """
         return self.status == self.VideoCallStatus.NOT_AVAILABLE
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.notify_users()
 
