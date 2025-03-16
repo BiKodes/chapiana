@@ -5,8 +5,9 @@ from os.path import join
 
 import environ
 from configurations import Configuration
-from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 from django.utils.crypto import get_random_string
+from kombu import Exchange, Queue
+from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -237,3 +238,23 @@ class Common(Configuration):
     EMAIL_HOST_PASSWORD = ''
 
     AUTH_USER_MODEL = 'accounts.ChapianaUser'
+
+    # Celery
+    CELERY_BROKER_URL = env.str("BROKER_URL", "redis://localhost:6379/0")
+    RESULT_BACKEND = os.getenv("RESULT_BACKEND", CELERY_BROKER_URL)
+    CELERY_TIMEZONE = TIME_ZONE
+    CELERY_DEFAULT_QUEUE = "chapiana_tasks"
+    CELERY_ACCEPT_CONTENT = ["json"]
+    CELERY_TASK_SERIALIZER = "json"
+    CELERY_RESULT_SERIALIZER = "json"
+    CELERY_RESULT_EXPIRES = 300  # 5 minutes
+    CELERY_TASK_HIGH_PRIORITY = 10
+    CELERY_TASK_QUEUES = (
+        Queue(
+            CELERY_DEFAULT_QUEUE,
+            Exchange(CELERY_DEFAULT_QUEUE),
+            routing_key=CELERY_DEFAULT_QUEUE,
+            queue_arguments={"x-max-priority": CELERY_TASK_HIGH_PRIORITY},
+        ),
+    )
+    CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
