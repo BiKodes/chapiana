@@ -188,6 +188,7 @@ class Message(models.Model):
         super(Message, self).save(*args, **kwargs)
         Conversation.create_if_not_exists(self.sender, self.recipient)
 
+
 class VideoCall(models.Model):
     """
     Represents a video call session between two users (caller and receiver).
