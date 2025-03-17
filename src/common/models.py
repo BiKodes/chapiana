@@ -15,7 +15,7 @@ class UploadedFile(models.Model):
     """
     guid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     uploaded_by = models.ForeignKey(ChapianaUser, on_delete=models.CASCADE, verbose_name=_("Uploaded_by"), related_name='+', db_index=True)
-    file = models.FileField(verbose_name=_("File"), blank=False, uploaded_to=user_directory_path)
+    file = models.FileField(verbose_name=_("File"), blank=False, upload_to=user_directory_path)
     uploaded_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Upload date"))
 
     def __str__(self):
