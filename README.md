@@ -153,7 +153,7 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
 
   Django Channels for real time communication
 
-  - **Celery**
+- **Celery**
   We are using Celery to manage Video call notification status.
 
   ```bash

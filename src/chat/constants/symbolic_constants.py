@@ -13,5 +13,6 @@ class VideoCallStatus(models.IntegerChoices):
     BUSY = 4, 'Busy'
     PROCESSING = 5, 'Processing'
     ENDED = 6, 'Ended'
+    MISSED = 7, 'Missed'
 
 ETA_TIME = timezone.now() + timedelta(minutes=1)

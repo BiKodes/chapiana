@@ -310,6 +310,12 @@ class VideoCall(models.Model):
         """
         return self.status == self.VideoCallStatus.NOT_AVAILABLE
     
+    def is_missed_call(self):
+        """
+        Returns True if the call was missed.
+        """
+        return self.status == self.VideoCallStatus.MISSED
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.notify_users()
