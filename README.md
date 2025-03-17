@@ -28,6 +28,9 @@ By doing so, messages sent to the group are received by all ChatConsumers in tha
 To implement this, a channel layer that uses Redis as its underlying storage mechanism is used. Redis provides the 
 infrastructure to manage these channels and groups, enabling efficient message distribution among participants.
 
+**Retries**
+We are using Celery to handle all retries on tasks failures. This also offer an additional anecdote to our systems scalability by offlaoding work from it to background workers. We notify users of an incoming call in real time and retry missed notifiactions.
+
 
 ## Key Features
 
@@ -149,6 +152,22 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
 - **WebSockets**
 
   Django Channels for real time communication
+
+  - **Celery**
+  We are using Celery to manage Video call notification status.
+
+  ```bash
+        [ Chapiana program ]
+                |
+                v
+      (Chapiana Task sent to queue)
+                |
+                v
+            [ Redis ]  <--- Message Broker
+                |
+                v
+         [ Celery Worker ] ---> Runs notifications task in background
+  ````
 
 - **Authentication**
 
