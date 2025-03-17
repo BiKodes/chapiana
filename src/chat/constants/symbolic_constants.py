@@ -1,6 +1,9 @@
 """Chat Symbolic Constants."""
 
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
 
 class VideoCallStatus(models.IntegerChoices):
     CONTACTING = 0, 'Contacting'
@@ -10,3 +13,5 @@ class VideoCallStatus(models.IntegerChoices):
     BUSY = 4, 'Busy'
     PROCESSING = 5, 'Processing'
     ENDED = 6, 'Ended'
+
+ETA_TIME = timezone.now() + timedelta(minutes=1)
