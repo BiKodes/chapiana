@@ -29,6 +29,7 @@ To implement this, a channel layer that uses Redis as its underlying storage mec
 infrastructure to manage these channels and groups, enabling efficient message distribution among participants.
 
 **Retries**
+
 We are using Celery to handle all retries on tasks failures. This also offer an additional anecdote to our systems scalability by offlaoding work from it to background workers. We notify users of an incoming call in real time and retry missed notifiactions.
 
 
@@ -154,6 +155,7 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
   Django Channels for real time communication
 
 - **Celery**
+
   We are using Celery to manage Video call notification status.
 
   ```bash

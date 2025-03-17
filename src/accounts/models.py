@@ -6,12 +6,13 @@ for user profiles, and the `OneTimePassword` model for handling one-time passwor
 (OTP) functionality.
 """
 
-from django.db import models
 from django.contrib.auth.models import(
     AbstractUser,
     Group,
     Permission
 )
+from django.db import models
+from django.utils import timezone
 from PIL import Image
 
 from src.accounts.managers import ChapianaUserManager
@@ -36,6 +37,10 @@ class ChapianaUser(AbstractUser):
         help_text="Specific permissions for this user.",
         related_query_name="chapianauser",
     )
+    # The last time the user was online.
+    was_online  = models.DateTimeField(null=True, blank=True)
+    # Whether the user is currently online.
+    is_online = models.BooleanField(default=False)
 
     email = models.EmailField(unique=True, null=True)
 
@@ -44,9 +49,25 @@ class ChapianaUser(AbstractUser):
 
     objects = ChapianaUserManager()
 
+    def mark_online(self):
+        """
+        Marks the user as online and saves the status.
+        """
+        self.is_online = True
+        self.save(update_fields=["is_online"])
+
+    def mark_offline(self):
+        """
+        Marks the user as offline and updates the was_online field with the current timestamp.
+        """
+        self.is_online = False
+        self.was_online = timezone.now()
+        self.save(update_fields=["is_online", "was_online"])
+    
     def __str__(self):
-        """String representation of the user."""
-        return f"{self.first_name} {self.last_name}"
+        """String representation of the user availability."""
+        return f"{self.username} - {"Online" if self.is_online else "Offline"}"
+    
 
 
 class Profile(models.Model):
