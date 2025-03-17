@@ -1,5 +1,4 @@
 """Chapiana data layers."""
-from typing import Optional, Any
 from datetime import timedelta
 
 from django.db import models
@@ -11,7 +10,7 @@ from model_utils.models import TimeStampedModel, SoftDeletableModel
 
 from src.accounts.models import ChapianaUser, Profile
 from src.common.base import UploadedFile
-from src.chat.constants.symbolic_constants import VideoCallStatus
+from src.chat.constants.symbolic_constants import VideoCallStatus, ETA_TIME
 from src.chat.tasks import notify_video_call_users
 
 
@@ -262,14 +261,17 @@ class VideoCall(models.Model):
         """
         Trigger Celery task to notify users asynchronously.
         """
-        notify_video_call_users.delay(
-            call_id=self.id,
-            caller_id=self.caller.id,
-            receiver_id=self.receiver.id,
-            status=self.status_name,
-            date_started=self.date_started.isoformat(),
-            date_ended=self.date_ended.isoformat(),
-            duration_seconds=self.duration_in_seconds
+        notify_video_call_users.apply_async(
+            args=[
+                self.id,
+                self.caller.id,
+                self.receiver.id,
+                self.status_name,
+                self.date_started.isoformat(),
+                self.date_ended.isoformat(),
+                self.duration_in_seconds
+            ],
+            eta=ETA_TIME
         )
     
     def is_accepted(self):

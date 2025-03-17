@@ -32,8 +32,6 @@ def notify_video_call_users(self, call_id, caller_id, receiver_id, status, date_
         "duration_seconds": duration_seconds,
     }
 
-    LOGGING.info(f"Celery Notification sent to {caller_group_name} and {receiver_group_name}")
-
     caller_group = f"user_{caller_id}_calls"
     receiver_group = f"user_{receiver_id}_calls"
 
