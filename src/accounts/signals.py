@@ -1,4 +1,4 @@
-# Signals specifically meant for user(s).
+"""Signals specifically meant for user(s)."""
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -24,6 +24,7 @@ def handle_user_logged_in(sender, user, request, **kwargs):
     if hasattr(user, "status"):
         user.status.mark_online()
 
+@receiver(user_logged_out)
 def handle_user_logged_out(sender, user, request, **kwargs):
     """
     Marks the user as offline and records the time when they log out."

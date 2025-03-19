@@ -5,7 +5,7 @@ from celery import shared_task
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from src.common.base import BaseRetryTask
+from src.common.models import BaseRetryTask
 
 LOGGER = logging.getLogger(__name__)
 
