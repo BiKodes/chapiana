@@ -1,17 +1,75 @@
 """Chapiana data layers."""
 from datetime import timedelta
 
+import emoji
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+import emoji
 from model_utils.models import TimeStampedModel, SoftDeletableModel
 
-from src.accounts.models import ChapianaUser, Profile
+from src.accounts.models import ChapianaUser
 from src.common.models import UploadedFile
-from src.chat.constants.symbolic_constants import VideoCallStatus, ETA_TIME
+from src.chat.constants.symbolic_constants import VideoCallStatus, ETA_TIME, ChatType, ChapianaUserPackage
 from src.chat.tasks import notify_video_call_users
+from src.chat.utils import get_country_code_by_name , get_country_name_choices
+
+
+class Category(models.Model):
+    """
+    Represents a category for chat rooms.
+    """
+    country_name = models.CharField(
+        max_length=100,
+        choices=get_country_name_choices(),
+        verbose_name=_("Country")
+    )
+    chat_type = models.CharField(max_length=20, choices=ChatType.choices, verbose_name=_("Chat Type"))
+    user_package = models.CharField(max_length=20, choices=ChapianaUserPackage.choices, verbose_name=_("User Package"))
+
+    class Meta:
+        verbsose_name=_("Category")
+        verbsose_name_plural = _("Categories")
+    
+    def __str__(self):
+        """
+        A readable string representation of the category.
+        """
+        return f"{self.country_flag} {self.country_name} - {self.get_chat_type_display()} - {self.get_user_package_display()}"
+    
+    def country_code(self):
+        """
+        The ISO Alpha-2 country code based on the country name.
+        """
+        return get_country_code_by_name(self.country_name) or "Unkown"
+    
+    @property
+    def country_flag(self):
+        """
+        The flag based on the country code.
+        """
+        code = self.country_code
+        if code == "Unkown" or not code:
+            return ""
+        
+        return emoji.emojize(
+            f":regionsl_indicator_{code[0].lower()}:"
+            f":regional_indicator_code{code[1].lower():}", language="alias"
+        )
+    
+    def category_type_display(self):
+        """
+        Human readbale caht type.
+        """
+        return self.get_chat_type_display()
+    
+    def user_package_display(self):
+        """
+        Human readbale user package.
+        """
+        return self.get_user_package_display()
 
 
 class ChatRoom(models.Model):
@@ -19,6 +77,7 @@ class ChatRoom(models.Model):
     Represents a chat room that can be created by a user, with multiple members
     and an optional shared file.
     """
+    category = models. ForeignKey(Category, on_delete=models.CASCADE, related_name="chat_room")
     creator = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
@@ -147,10 +206,8 @@ class Message(models.Model):
     )
     message_content = models.TextField(verbose_name=_("Text"), blank=True, null=True)
     file = models.ForeignKey(UploadedFile, related_name="message", on_delete=models.DO_NOTHING, verbose_name="File", blank=True, null=True)
-    date_added = models.DateTimeField(auto_now_add=True)
-    profile_pic = models.OneToOneField(
-        Profile
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     read = models.BooleanField(verbose_name=_("Read"), default=False)
 
     # Managers
