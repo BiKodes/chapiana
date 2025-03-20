@@ -1,7 +1,7 @@
 # Overview
 
-**Chapiana** is Kenyan Swahili slang meaning "Talking With Each Other or Lets Talk". It is a fully functional real 
-time chat application designed for seamless and instant messaging. Built with a scalable backend architecture and 
+**Chapiana** is Kenyan Swahili slang meaning **"Talking With Each Other or Lets Talk".** It is a fully functional real 
+time chat and video call application designed for seamless and instant messaging and calls. Built with a scalable backend architecture and 
 an intuitive frontend interface, this application supports one-on-one messaging, group chats, and live status updates. 
 
 The system ensures efficient message delivery using WebSockets, providing a smooth real time communication experience.
@@ -35,60 +35,60 @@ We are using Celery to handle all retries on tasks failures. This also offer an 
 
 ## Key Features
 
-- **Instant Messaging**
+1. **Instant Messaging**
 
   Real time chat functionality powered by **WebSockets** and **Django Channels** for minimal latency.
 
-- **User Authentication**
+2. **User Authentication**
   
   Secure user registration, login, and authentication using Django's built-in authentication system.
 
-- **Responsive Design**
+3. **Responsive Design**
 
   Clean and intuitive user interface built with Django Templates and styled with CSS and TailwindCSS for a responsive 
   experience.
   
-- **One-on-One & Group Chats**
+4. **One-on-One & Group Chats**
 
   Private conversations and group discussions with dynamic user management.
 
-- **Typing Indicators & Read Receipts**
+5. **Typing Indicators & Read Receipts**
 
   Real time feedback on message interactions.
 
-- **Online Status**
+6. **Online Status**
 
   Track the online/offline status of users in real time.
 
-- **Notifications**
+7. **Notifications**
 
   Instant alerts for new messages and mentions.
 
-- **Message History & Persistence**
+8. **Message History & Persistence**
 
   Stored chat history for seamless access across sessions.
 
-- **Search and Connect**
+9. **Search and Connect**
 
 Find and connect with users quickly.
 
-- **Scalability**
+10. **Scalability**
 
   Optimized for high performance and scalable deployments on Amazon S3
 
-- **Scalable Architecture** 
+11. **Scalable Architecture** 
 
   Built with Django's robust backend and scalable WebSocket integration for handling growing user bases.
 
 ## Architecture
 
-- When a user logs in, the frontend downloads the user list and opens a Websocket connection to the server (notifications channel).
+When a user logs in, the frontend downloads the user list and opens a Websocket connection to the server (notifications channel).
 
-- When a user selects another user to chat, the frontend downloads the latest 15 messages (see settings) they've exchanged.
+When a user selects another user to chat, the frontend downloads the latest 15 messages (see settings) they've exchanged.
 
-- When a user sends a message, the frontend sends a POST to the REST API, then Django saves the message and notifies the users involved using the Websocket connection (sends the new message ID).
+When a user sends a message, the frontend sends a POST to the REST API, then Django saves the message and notifies the users involved using the Websocket connection (sends the new message ID).
 
-- When the frontend receives a new message notification (with the message ID), it performs a GET query to the API to download the received message.
+When the frontend receives a new message notification (with the message ID), it performs a GET query to the API to download the received message.
 
 
 **This project impliments the follwing layers:**
@@ -142,19 +142,19 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
 
 ## Tech Stack
 
-- **Backend**
+1. **Backend**
 
   Python (Django, Django Channels), Redis, PostgreSQL
 
-- **Frontend**
+2. **Frontend**
 
   Django Templates for rendering dynamic HTML pages and JavaScript.
 
-- **WebSockets**
+3. **WebSockets**
 
   Django Channels for real time communication
 
-- **Celery**
+4. **Celery**
 
   We are using Celery to manage Video call notification status.
 
@@ -171,26 +171,26 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
          [ Celery Worker ] ---> Runs notifications task in background
   ````
 
-- **Authentication**
+5. **Authentication**
 
   Django's built-in authentication system for secure user management.
 
-- **Styling**
+6. **Styling**
 
   CSS and Tailwind CSS for a modern and polished design.
 
-- **Database**
+7. **Database**
 
   PostgreSQL for storing user data and chat history. If more performance is required, 
   a PostgreSQL cluster / shard could be deployed.
 
   PD: I'm using indexes to improve performance.
 
-- **Docker Volumes**
+8. **Docker Volumes**
 
   It is to persist database data.
 
-- **Nginx**
+9. **Nginx**
 
   Chapiana configures NGINX  as a reverse proxy for performance to:
 
@@ -200,11 +200,11 @@ Now, Chapiana + Gunicorn runs behind NGINX, with SSL support and static file han
 
   - Enable SSL (HTTPS).
 
-- **Gunicorn**
+10. **Gunicorn**
 
   We are using using Gunicorn instead of Django’s built-in server for production.
 
-- **Deployment**
+11. **Deployment**
 
   Docker, Nginx, and Gunicorn for production readiness
 
@@ -216,8 +216,8 @@ Create your account or log in securely.
 
 2. **Dashboard Access**
 
-  - Edit your profile and manage settings.
-  - Search and add friends effortlessly.
+  i. Edit your profile and manage settings.
+  ii. Search and add friends effortlessly.
 
 3. **Friend Requests**
 
@@ -231,9 +231,9 @@ Engage in seamless, real-time conversations.
 
 ### Prerequisites
 
-- Python 3.12 installed on your machine.
+Python 3.12 installed on your machine.
 
-- Basic knowledge of Python, Django, and Django Templates.
+Basic knowledge of Python, Django, and Django Templates.
 
 Installation
 1. **Clone the Repository**
@@ -351,17 +351,17 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 ### Acknowledgments
 
-- Special thanks to the Django community for providing an excellent framework and resources.
+1. Special thanks to the Django community for providing an excellent framework and resources.
 
-- I was inspired by modern chat applications like Slack, Discord, and WhatsApp.
+2. I was inspired by modern chat applications like Slack, Discord, and WhatsApp.
 
 ### Contact
 
 If you have any questions, suggestions, or feedback, feel free to reach out:
 
-- **GitHub**
+1. **GitHub**
   [BiKodes](https://github.com/BiKodes)
 
-- **Email** 
+2. **Email** 
   bikocodes@gmail.com
 
