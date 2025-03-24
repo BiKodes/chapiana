@@ -16,6 +16,7 @@ def track_status_change(sender, instance, **kwargs):
     """
     if instance.pk:
         previous = VideoCall.objects.get(pk=instance.pk)
+
         if previous.status != instance.status:
             LOGGER.info(
                 f"Status changed from {previous.get_status_display()} to {instance.get_status_display()}"
