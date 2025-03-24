@@ -4,8 +4,8 @@ ASGI config for chapiana project.
 It exposes the ASGI callable as a module-level variable named ``application``.
 
 """
-
 import os
+from channels.routing import ProtocolTypeRouter
 
 
 # Default to local environment if not explicitly set
@@ -23,4 +23,9 @@ os.environ.setdefault("DJANGO_CONFIGURATION", DJANGO_ENV.capitalize())
 
 from configurations.asgi import get_asgi_application
 
-application = get_asgi_application()
+application = ProtocolTypeRouter(
+   { 
+       "http": get_asgi_application(),
+    
+   }
+)
