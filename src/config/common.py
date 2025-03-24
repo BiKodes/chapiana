@@ -25,6 +25,7 @@ class Common(Configuration):
         "django.contrib.staticfiles",
         
         # Third party apps
+        "daphne",
         "rest_framework",
         "rest_framework.authtoken",
         # "django_filters",
@@ -39,6 +40,7 @@ class Common(Configuration):
         "src.chat.apps.ChatConfig",
     )
 
+    ASGI_APPLICATION = "src.config.asgi.application"
 
     MIDDLEWARE = (
         "django.middleware.security.SecurityMiddleware",

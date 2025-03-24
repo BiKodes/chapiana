@@ -32,19 +32,19 @@ class Category(models.Model):
     class Meta:
         verbsose_name=_("Category")
         verbsose_name_plural = _("Categories")
-    
+
     def __str__(self):
         """
         A readable string representation of the category.
         """
         return f"{self.country_flag} {self.country_name} - {self.get_chat_type_display()} - {self.get_user_package_display()}"
-    
+
     def country_code(self):
         """
         The ISO Alpha-2 country code based on the country name.
         """
         return get_country_code_by_name(self.country_name) or "Unkown"
-    
+
     @property
     def country_flag(self):
         """
@@ -53,18 +53,18 @@ class Category(models.Model):
         code = self.country_code
         if code == "Unkown" or not code:
             return ""
-        
+
         return emoji.emojize(
             f":regionsl_indicator_{code[0].lower()}:"
             f":regional_indicator_code{code[1].lower():}", language="alias"
         )
-    
+
     def category_type_display(self):
         """
         Human readbale caht type.
         """
         return self.get_chat_type_display()
-    
+
     def user_package_display(self):
         """
         Human readbale user package.
@@ -130,6 +130,7 @@ class ChatRoom(models.Model):
             self.slug = slugify(self.room_name)
         super().save(*args, **kwargs)
 
+
 class Conversation(TimeStampedModel):
     """
     Model representing a dialog (conversation) between two users.
@@ -189,7 +190,13 @@ class Message(models.Model):
     """
     Model representing a message exchanged between users in a conversation or chat room.
     """
-    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=True, related_name="chat_messages")
+    chat_room = models.ForeignKey(
+        ChatRoom,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="chat_messages",
+    )
     sender = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
@@ -206,6 +213,7 @@ class Message(models.Model):
     )
     message_content = models.TextField(verbose_name=_("Text"), blank=True, null=True)
     file = models.ForeignKey(UploadedFile, related_name="message", on_delete=models.DO_NOTHING, verbose_name="File", blank=True, null=True)
+    time = models.TimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     read = models.BooleanField(verbose_name=_("Read"), default=False)
@@ -214,7 +222,7 @@ class Message(models.Model):
     all_objects = models.Manager()
 
     class Meta:
-        ordering = ("date_added", )
+        ordering = ("created_at", )
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
 
@@ -250,7 +258,6 @@ class Message(models.Model):
 class VideoCall(models.Model):
     """
     Represents a video call session between two users (caller and receiver).
-    Stores call status, timestamps, and duration.
     """
     caller = models.ForeignKey(
         ChapianaUser,
@@ -305,7 +312,7 @@ class VideoCall(models.Model):
         Returns the duration of the video call as a timedelta.
         """
         return self.date_ended - self.date_started
-    
+
     @property
     def duration_in_seconds(self):
         """
@@ -313,7 +320,7 @@ class VideoCall(models.Model):
         """
         duration: timedelta = self.video_call_duration
         return int(duration.total_seconds())
-    
+
     def notify_users(self):
         """
         Trigger Celery task to notify users asynchronously.
@@ -330,13 +337,13 @@ class VideoCall(models.Model):
             ],
             eta=ETA_TIME
         )
-    
+
     def is_accepted(self):
         """
         Returns True if the call was accepted.
         """
         return self.status == self.VideoCallStatus.ACCEPTED
-    
+
     def is_rejected(self):
         """
         Returns True if the call was rejected.
@@ -348,32 +355,31 @@ class VideoCall(models.Model):
         Returns True if the receiver was busy.
         """
         return self.status == self.VideoCallStatus.BUSY
-    
+
     def is_ended(self):
         """
         Returns True if the call has ended.
         """
         return self.status == self.VideoCallStatus.ENDED
-    
+
     def is_contacting(self):
         """
         Returns True if the call is currently contacting the receiver.
         """
         return self.status == self.VideoCallStatus.CONTACTING
-    
+
     def is_not_available(self):
         """
         Returns True if the receiver was not available.
         """
         return self.status == self.VideoCallStatus.NOT_AVAILABLE
-    
+
     def is_missed_call(self):
         """
         Returns True if the call was missed.
         """
         return self.status == self.VideoCallStatus.MISSED
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.notify_users()
-
