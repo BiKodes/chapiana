@@ -94,7 +94,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         clear_history = await clear_history_query(room_name)
 
         if clear_history:
-            await 
+            await self.channel_layer.group_send(self.room_group_name, {
+                "type": "chat_message",
+                "command": "clear_history",
+            })
 
     # Receive message from room group
     async def chat_message(self, event):
@@ -124,6 +127,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "created_at": data['result']['created_at'],
                 'command': command,
             })
+
         elif command == 'change_icon':
             await self.channel_layer.group_send(self.room_group_name, {
                 'type': 'chat_message',
