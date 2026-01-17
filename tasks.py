@@ -73,14 +73,14 @@ def lint(c):
     """
     Check style with flake8.
     """
-    c.run("flake8 chapiana tests")
+    c.run("flake8 src tests")
 
 @task
 def format(c):
     """
     Fix linting errors.
     """
-    c.run("isort && black")
+    c.run("isort src tests && black src tests")
 
 @task
 def changelog(c):

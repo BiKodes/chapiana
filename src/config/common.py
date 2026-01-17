@@ -2,13 +2,11 @@ import os
 from datetime import timedelta
 from os.path import join
 
-
 import environ
 from configurations import Configuration
 from django.utils.crypto import get_random_string
 from kombu import Exchange, Queue
 from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,27 +15,21 @@ class Common(Configuration):
     env = environ.Env()
 
     INSTALLED_APPS = (
+        "daphne",
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
-        
         # Third party apps
-        "daphne",
         "rest_framework",
         "rest_framework.authtoken",
-        # "django_filters",
-        # "rest_framework_simplejwt",
-        # "rest_framework_simplejwt.token_blacklist",
-        # "drf_yasg",
-        # "corsheaders",
         "configurations",
-
         # Custom apps
         "src.accounts.apps.AccountsConfig",
         "src.chat.apps.ChatConfig",
+        "src.common.apps.CommonConfig",
     )
 
     ASGI_APPLICATION = "src.config.asgi.application"
@@ -51,7 +43,7 @@ class Common(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        "src.common.middleware.",
+        "src.common.middleware.ChapianaActiveUserMiddleware",
     )
 
     CORS_ALLOWED_ORIGINS = [
@@ -66,31 +58,22 @@ class Common(Configuration):
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     ADMINS = (("Author", "bikocodes@gmail.com"),)
 
-    
     DATABASES = {
-       'default': {
-           "NAME": env.str("POSTGRES_NAME"),
+        'default': {
+            "NAME": env.str("POSTGRES_NAME"),
             "USER": env.str("POSTGRES_USER"),
-            "PASSWORD":env.str ("POSTGRES_PASSWORD"),
-            "HOST": env.str("POSTGRES_HOST", "localhost"),
-            "PORT": env.int("POSTGRES_PORT", 5432),
+            "PASSWORD": env.str("POSTGRES_PASSWORD"),
+            "HOST": env.str("POSTGRES_HOST"),
+            "PORT": env.int("POSTGRES_PORT"),
             "ENGINE": "django.db.backends.postgresql",
-            # "ATOMIC_REQUEST": True,
-            # "OPTIONS": {
-            #     "server_side_binding": True,
-            #     "isolation_level": ISOLATION_LEVEL_READ_COMMITTED
-            # }
         }
     }
-
-    # Enable Connection Pooling
-    # DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
     APPEND_SLASH = False
     TIME_ZONE = "UTC"
     LANGUAGE_CODE = "en-us"
 
-    # If you set this to False, Django will make some optimizations so 
+    # If you set this to False, Django will make some optimizations so
     # as not to load the internationalization machinery.
     USE_I18N = False
     USE_L10N = True
@@ -101,7 +84,7 @@ class Common(Configuration):
     SECRET_KEY = get_random_string(50, chars)
 
     # Static files (CSS, JavaScript, Images)
-  
+
     STATIC_ROOT = os.path.normpath(join(os.path.dirname(BASE_DIR), "static"))
     STATICFILES_DIRS = []
     STATIC_URL = "/static/"

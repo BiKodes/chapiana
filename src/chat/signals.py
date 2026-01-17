@@ -1,13 +1,15 @@
 """Signals to Track Call Lifecycle Events."""
+
 import logging
 
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from src.chat.models import VideoCall
 from src.chat.constants.symbolic_constants import VideoCallStatus
+from src.chat.models import VideoCall
 
-LOGGER =logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
+
 
 @receiver(pre_save, sender=VideoCall)
 def track_status_change(sender, instance, **kwargs):
@@ -33,12 +35,10 @@ def call_lifecycle_handler(sender, instance, created, **kwargs):
         LOGGER.info(
             f"New call initiated between {instance.caller} and {instance.receiver}"
         )
-        # Send notification on new call start
         instance.notify_users()
 
     elif instance.status == VideoCallStatus.ENDED:
         LOGGER.info(
             f"Call ended between {instance.caller} and {instance.receiver}"
         )
-        # Notify about call ending
         instance.notify_users()

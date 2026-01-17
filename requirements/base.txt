@@ -5,6 +5,14 @@ Django
 django-allauth
 django-cleanup
 djangorestframework
+django-configurations
+django-environ
+django-cors-headers
+daphne
+psycopg2-binary
+emoji
+django-model-utils
+pycountry
 Pillow
 redis
 requests

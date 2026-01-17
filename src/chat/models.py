@@ -1,4 +1,5 @@
 """Chapiana data layers."""
+
 from datetime import timedelta
 
 import emoji
@@ -7,31 +8,45 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-import emoji
-from model_utils.models import TimeStampedModel, SoftDeletableModel
+from model_utils.models import SoftDeletableModel, TimeStampedModel
 
 from src.accounts.models import ChapianaUser
-from src.common.models import UploadedFile
-from src.chat.constants.symbolic_constants import VideoCallStatus, ETA_TIME, ChatType, ChapianaUserPackage
+from src.chat.constants.symbolic_constants import (
+    ETA_TIME,
+    ChapianaUserPackage,
+    ChatType,
+    VideoCallStatus,
+)
+from src.chat.country_utils import (
+    get_country_code_by_name,
+    get_country_name_choices,
+)
 from src.chat.tasks import notify_video_call_users
-from src.chat.utils import get_country_code_by_name , get_country_name_choices
+from src.common.models import UploadedFile
 
 
 class Category(models.Model):
     """
     Represents a category for chat rooms.
     """
+
     country_name = models.CharField(
         max_length=100,
         choices=get_country_name_choices(),
-        verbose_name=_("Country")
+        verbose_name=_("Country"),
     )
-    chat_type = models.CharField(max_length=20, choices=ChatType.choices, verbose_name=_("Chat Type"))
-    user_package = models.CharField(max_length=20, choices=ChapianaUserPackage.choices, verbose_name=_("User Package"))
+    chat_type = models.CharField(
+        max_length=20, choices=ChatType.choices, verbose_name=_("Chat Type")
+    )
+    user_package = models.CharField(
+        max_length=20,
+        choices=ChapianaUserPackage.choices,
+        verbose_name=_("User Package"),
+    )
 
     class Meta:
-        verbsose_name=_("Category")
-        verbsose_name_plural = _("Categories")
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     def __str__(self):
         """
@@ -56,7 +71,8 @@ class Category(models.Model):
 
         return emoji.emojize(
             f":regionsl_indicator_{code[0].lower()}:"
-            f":regional_indicator_code{code[1].lower():}", language="alias"
+            f":regional_indicator_code{code[1].lower():}",
+            language="alias",
         )
 
     def category_type_display(self):
@@ -77,23 +93,22 @@ class ChatRoom(models.Model):
     Represents a chat room that can be created by a user, with multiple members
     and an optional shared file.
     """
-    category = models. ForeignKey(Category, on_delete=models.CASCADE, related_name="chat_room")
+
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="chat_room"
+    )
     creator = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
         null=True,
         related_name="created_rooms",
-        verbose_name="Creator"
+        verbose_name="Creator",
     )
     room_name = models.CharField(
-        max_length=50,
-        unique=True,
-        verbose_name="Room Name"
+        max_length=50, unique=True, verbose_name="Room Name"
     )
     members = models.ManyToManyField(
-        ChapianaUser,
-        related_name="chat_rooms",
-        verbose_name="Members"
+        ChapianaUser, related_name="chat_rooms", verbose_name="Members"
     )
     room_file = models.ForeignKey(
         UploadedFile,
@@ -101,13 +116,10 @@ class ChatRoom(models.Model):
         related_name="chat_rooms",
         verbose_name="Attached File",
         blank=True,
-        null=True
+        null=True,
     )
     slug = models.SlugField(
-        unique=True,
-        blank=True,
-        null=True,
-        verbose_name="Slug"
+        unique=True, blank=True, null=True, verbose_name="Slug"
     )
 
     class Meta:
@@ -123,7 +135,7 @@ class ChatRoom(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Overrides the default save method to automatically generate a slug 
+        Overrides the default save method to automatically generate a slug
         from the room name.
         """
         if not self.slug:
@@ -135,37 +147,46 @@ class Conversation(TimeStampedModel):
     """
     Model representing a dialog (conversation) between two users.
     """
+
     id = models.BigAutoField(primary_key=True, verbose_name=_("Id"))
     first_user = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
         verbose_name=_("first_user"),
-        related_name="+", 
-        db_index=True
+        related_name="+",
+        db_index=True,
     )
     second_user = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
         verbose_name=_("second_user"),
-        related_name="+", 
-        db_index=True
+        related_name="+",
+        db_index=True,
     )
 
     class Meta:
-        unique_together = (("first_user", "second_user"), ("second_user", "first_user"))
+        unique_together = (
+            ("first_user", "second_user"),
+            ("second_user", "first_user"),
+        )
         verbose_name = _("Conversation")
         verbose_name_plural = _("Conversations")
 
     def __str__(self):
-        return _("Conversation between {} and {}").format(self.first_user_id, self.second_user_id)
+        return _("Conversation between {} and {}").format(
+            self.first_user_id, self.second_user_id
+        )
 
     @staticmethod
-    def conversation_exists(user_one: ChapianaUser, user_two: ChapianaUser) -> None:
+    def conversation_exists(
+        user_one: ChapianaUser, user_two: ChapianaUser
+    ) -> None:
         """
         Check if a conversation already exists between two users.
         """
         return Conversation.objects.filter(
-            Q(first_user=user_one, second_user=user_two) | Q(first_user=user_two, second_user=user_one)
+            Q(first_user=user_one, second_user=user_two)
+            | Q(first_user=user_two, second_user=user_one)
         ).first()
 
     @staticmethod
@@ -174,7 +195,9 @@ class Conversation(TimeStampedModel):
         Create a new conversation between two users if it doesn't exist.
         """
         if not Conversation.conversation_exists(user_one, user_two):
-            Conversation.objects.create(first_user=user_one, second_user=user_two)
+            Conversation.objects.create(
+                first_user=user_one, second_user=user_two
+            )
 
     @staticmethod
     def get_conversations_for_user(user: ChapianaUser):
@@ -190,6 +213,7 @@ class Message(models.Model):
     """
     Model representing a message exchanged between users in a conversation or chat room.
     """
+
     chat_room = models.ForeignKey(
         ChatRoom,
         on_delete=models.CASCADE,
@@ -211,31 +235,40 @@ class Message(models.Model):
         verbose_name=_("Recipient"),
         db_index=True,
     )
-    message_content = models.TextField(verbose_name=_("Text"), blank=True, null=True)
-    file = models.ForeignKey(UploadedFile, related_name="message", on_delete=models.DO_NOTHING, verbose_name="File", blank=True, null=True)
+    message_content = models.TextField(
+        verbose_name=_("Text"), blank=True, null=True
+    )
+    file = models.ForeignKey(
+        UploadedFile,
+        related_name="message",
+        on_delete=models.DO_NOTHING,
+        verbose_name="File",
+        blank=True,
+        null=True,
+    )
     time = models.TimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     read = models.BooleanField(verbose_name=_("Read"), default=False)
 
-    # Managers
     all_objects = models.Manager()
 
     class Meta:
-        ordering = ("created_at", )
+        ordering = ("created_at",)
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
 
     def __str__(self):
         return f"{self.sender.username}: {self.message_content}"
-    
+
     @staticmethod
     def get_unread_count_for_dialog_with_user(sender, recipient) -> int:
         """
         Get the count of unread messages in a conversation between two users.
         """
-        return Message.objects.filter(sender_id=sender, recipient_id=recipient, read=False).count()
-    
+        return Message.objects.filter(
+            sender_id=sender, recipient_id=recipient, read=False
+        ).count()
 
     @staticmethod
     def get_last_message_for_conversation(sender, recipient):
@@ -243,8 +276,10 @@ class Message(models.Model):
         Get the latest message exchanged in a conversation between two users.
         """
         return Message.objects.filter(
-            Q(sender_id=sender, recipient_id=recipient) | Q(sender_id=recipient, recipient_id=sender) \
-            .select_related("sender", "recipient")[0]
+            Q(sender_id=sender, recipient_id=recipient)
+            | Q(sender_id=recipient, recipient_id=sender).select_related(
+                "sender", "recipient"
+            )[0]
         )
 
     def save(self, *args, **kwargs):
@@ -259,34 +294,32 @@ class VideoCall(models.Model):
     """
     Represents a video call session between two users (caller and receiver).
     """
+
     caller = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
         related_name="video_calls_made",
-        verbose_name="Caller"
+        verbose_name="Caller",
     )
     receiver = models.ForeignKey(
         ChapianaUser,
         on_delete=models.CASCADE,
         related_name="video_calls_received",
-        verbose_name="Receiver"
+        verbose_name="Receiver",
     )
     status = models.PositiveSmallIntegerField(
         choices=VideoCallStatus.choices,
         default=VideoCallStatus.CONTACTING,
-        verbose_name="Call Status"
+        verbose_name="Call Status",
     )
     date_started = models.DateTimeField(
-        default=timezone.now,
-        verbose_name="Start Time"
+        default=timezone.now, verbose_name="Start Time"
     )
     date_ended = models.DateTimeField(
-        default=timezone.now,
-        verbose_name="End Time"
+        default=timezone.now, verbose_name="End Time"
     )
     date_created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Created At"
+        auto_now_add=True, verbose_name="Created At"
     )
 
     class Meta:
@@ -303,7 +336,6 @@ class VideoCall(models.Model):
         Returns the human-readable name of the call status.
         Assumes VIDEO_CALL_STATUS is a dict mapping integers to strings.
         """
-        # Auto-generated by Django for 'status'
         return self.get_status_display()
 
     @property
@@ -333,9 +365,9 @@ class VideoCall(models.Model):
                 self.status_name,
                 self.date_started.isoformat(),
                 self.date_ended.isoformat(),
-                self.duration_in_seconds
+                self.duration_in_seconds,
             ],
-            eta=ETA_TIME
+            eta=ETA_TIME,
         )
 
     def is_accepted(self):

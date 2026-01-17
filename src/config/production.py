@@ -21,8 +21,8 @@ class PRODUCTION(Common):
     AWS_QUERYSTRING_AUTH = False
     MEDIA_URL = f"https://s3.amazonaws.com/{AWS_STORAGE_BUCKET_NAME}/"
 
-    # Response can be cached by browser and any intermediary caches 
-    # (i.e. it is "public") for up to 1 day 86400 = (60 seconds x 
+    # Response can be cached by browser and any intermediary caches
+    # (i.e. it is "public") for up to 1 day 86400 = (60 seconds x
     # 60 minutes x 24 hours)
     AWS_HEADERS = {
         "Cache-Control": "max-age=86400, s-maxage=86400, must-revalidate",
