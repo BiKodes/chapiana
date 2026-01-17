@@ -1,8 +1,9 @@
 """Chapiana chat tasks."""
+
 import logging
 
-from celery import shared_task
 from asgiref.sync import async_to_sync
+from celery import shared_task
 from channels.layers import get_channel_layer
 
 from src.common.models import BaseRetryTask
@@ -10,18 +11,25 @@ from src.common.models import BaseRetryTask
 LOGGER = logging.getLogger(__name__)
 
 
-@shared_task(bind=True,  base=BaseRetryTask)
-def notify_video_call_users(self, call_id, caller_id, receiver_id, status, date_started, date_ended, duration_seconds):
+@shared_task(bind=True, base=BaseRetryTask)
+def notify_video_call_users(
+    self,
+    call_id,
+    caller_id,
+    receiver_id,
+    status,
+    date_started,
+    date_ended,
+    duration_seconds,
+):
     """
     Celery task to notify users about the video call status over channels.
     """
     LOGGER.info(f"Starting notification task for VideoCall ID {call_id}.")
 
-    # WebSocket Notification
     channel_layer = get_channel_layer()
 
     payload = {
-        # Method name in the consumer
         "type": "video_call_status",
         "call_id": call_id,
         "caller_id": caller_id,
@@ -39,13 +47,14 @@ def notify_video_call_users(self, call_id, caller_id, receiver_id, status, date_
         async_to_sync(channel_layer.group_send)(caller_group, payload)
         async_to_sync(channel_layer.group_send)(receiver_group, payload)
 
-        LOGGER.info(f"WebSocket notification sent to {caller_group} and {receiver_group}")
-
-        LOGGER.info(f"Notification task for VideoCall ID {call_id} completed successfully!")
-
-    except  Exception as ex:
-        LOGGER.error(
-            f"Error in notify_video_call_users task: {str(ex)}"
+        LOGGER.info(
+            f"WebSocket notification sent to {caller_group} and {receiver_group}"
         )
-        #  Celery autoretry will handle retrying
+
+        LOGGER.info(
+            f"Notification task for VideoCall ID {call_id} completed successfully!"
+        )
+
+    except Exception as ex:
+        LOGGER.error(f"Error in notify_video_call_users task: {str(ex)}")
         raise self.retry(ex)

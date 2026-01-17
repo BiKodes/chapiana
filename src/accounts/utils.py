@@ -11,11 +11,10 @@ import logging
 from logging import Logger
 from typing import Final
 
-from django.core.mail import send_mail
-from django.conf import settings
 from celery import shared_task
+from django.conf import settings
+from django.core.mail import send_mail
 
-# Initialize logger
 _LOGGER: Final[Logger] = logging.getLogger(__name__)
 
 
@@ -41,5 +40,4 @@ def send_email(random_code: int, user_email: str) -> bool:
             f"The authentication code was not sent to {user_email}. Error: {exc}",
             exc_info=True,
         )
-        # Re-raise the exception to ensure the task is marked as failed
         raise

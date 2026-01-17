@@ -1,8 +1,9 @@
 # -*- coding: utf-8
-from __future__ import unicode_literals, absolute_import
+from __future__ import absolute_import, unicode_literals
+
+import os
 
 import django
-import os
 
 DEBUG = True
 
@@ -27,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # 3rd party
     'channels',
     'django_extensions',
@@ -55,13 +55,15 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'TIMEOUT': 36000,
         'KEY_PREFIX': 'django_mail_admin',
-    }
+    },
 }
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'example', 'templates'), ],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'example', 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +99,6 @@ LOGGING = {
         },
     },
     # Uncomment this to view chapiana's logs
-
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
@@ -118,9 +119,7 @@ USE_TZ = True
 SITE_ID = 1
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
+    'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}
 }
 ALLOWED_HOSTS = ['*']
 

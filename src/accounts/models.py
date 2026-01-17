@@ -6,11 +6,7 @@ for user profiles, and the `OneTimePassword` model for handling one-time passwor
 (OTP) functionality.
 """
 
-from django.contrib.auth.models import(
-    AbstractUser,
-    Group,
-    Permission
-)
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.utils import timezone
 from PIL import Image
@@ -37,9 +33,7 @@ class ChapianaUser(AbstractUser):
         help_text="Specific permissions for this user.",
         related_query_name="chapianauser",
     )
-    # The last time the user was online.
-    was_online  = models.DateTimeField(null=True, blank=True)
-    # Whether the user is currently online.
+    was_online = models.DateTimeField(null=True, blank=True)
     is_online = models.BooleanField(default=False)
 
     email = models.EmailField(unique=True, null=True)
@@ -63,11 +57,10 @@ class ChapianaUser(AbstractUser):
         self.is_online = False
         self.was_online = timezone.now()
         self.save(update_fields=["is_online", "was_online"])
-    
+
     def __str__(self):
         """String representation of the user availability."""
-        return f"{self.username} - {"Online" if self.is_online else "Offline"}"
-    
+        return f"{self.username} - {'Online' if self.is_online else 'Offline'}"
 
 
 class Profile(models.Model):
@@ -79,9 +72,7 @@ class Profile(models.Model):
     """
 
     user = models.OneToOneField(
-        ChapianaUser,
-        on_delete=models.CASCADE,
-        related_name="user_profile"
+        ChapianaUser, on_delete=models.CASCADE, related_name="user_profile"
     )
     image = models.ImageField(default="default.jpg", upload_to="profile_pics")
 
